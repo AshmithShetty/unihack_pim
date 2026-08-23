@@ -1,0 +1,8 @@
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+vanna[chromadb]==2.0.2
+groq==0.13.1
+sqlglot==26.3.8
+pandas==2.2.3
+python-multipart==0.0.20
+python-dotenv==1.0.1

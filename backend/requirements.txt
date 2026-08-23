@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+python-multipart
+groq
+pydantic
+crawl4ai
+thefuzz
+python-Levenshtein
+openpyxl
+pandas
+langchain
+langchain-community
+langchain-groq
+python-dotenv
+pymupdf
+aiohttp
