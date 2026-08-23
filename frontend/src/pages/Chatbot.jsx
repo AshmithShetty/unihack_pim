@@ -7,7 +7,7 @@ import clsx from 'clsx'
 export default function Chatbot() {
   const { id } = useParams()
   const [messages, setMessages] = useState([
-    { id: '1', role: 'assistant', text: `Hello! I am Vanna AI, your data assistant for Project #${id}. You can ask me questions specifically about this project's output data.` }
+    { id: '1', role: 'assistant', text: `Hello! I am your AI data assistant for Project #${id}. You can ask me questions specifically about this project's output data.` }
   ])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -90,7 +90,7 @@ export default function Chatbot() {
           </div>
           <div>
             <h1 className="text-lg font-bold text-slate-900 leading-tight">Data Chatbot</h1>
-            <p className="text-xs text-slate-500">Powered by Vanna AI</p>
+            <p className="text-xs text-slate-500">Powered by LangChain SQL Agent</p>
           </div>
         </div>
       </div>
