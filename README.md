@@ -40,7 +40,7 @@ The core of the application is a highly concurrent, asynchronous 5-stage pipelin
 ### Backend
 - **Framework**: FastAPI (Python)
 - **Database**: SQLite3
-- **AI / LLMs**: Groq (Llama-3.1-8b-instant / OpenAI OSS equivalents)
+- **AI / LLMs**: Groq (openai/gpt-oss-120b)
 - **AI Orchestration**: LangChain (SQL Agent)
 - **Web Scraping**: Crawl4AI
 - **PDF Extraction**: PyMuPDF (fitz)
@@ -74,7 +74,7 @@ You must configure the backend environment variables before starting.
 3. Open the `.env` file and insert your Groq API key:
    ```env
    GROQ_API_KEY="your_groq_api_key_here"
-   GROQ_MODEL="llama-3.1-8b-instant"
+   GROQ_MODEL="openai/gpt-oss-120b"
    ```
 
 ### 3. Backend Setup
