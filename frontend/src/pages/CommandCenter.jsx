@@ -29,10 +29,12 @@ export default function CommandCenter() {
 
   const fetchRows = async () => {
     try {
-      const res = await axios.get(`/api/projects/${id}/rows`)
+      const res = await axios.get(`/api/projects/${id}/rows`, { timeout: 10000 })
       setRows(res.data.rows || [])
     } catch (err) {
-      console.error(err)
+      console.error('Failed to fetch rows:', err)
+      // On error, we still want to unset loading so the UI doesn't hang.
+      // If rows is empty, the Master Data Grid will gracefully show 0 rows.
     } finally {
       setLoading(false)
     }
@@ -195,7 +197,12 @@ export default function CommandCenter() {
   const isComplete = rows.length > 0 && rows.every(r => r.status === 'done')
 
   if (loading && rows.length === 0) {
-    return <div className="flex justify-center items-center h-64"><Loader2 className="animate-spin text-slate-400" size={32} /></div>
+    return (
+      <div className="flex flex-col justify-center items-center h-64 space-y-4">
+        <Loader2 className="animate-spin text-slate-400" size={32} />
+        <span className="text-slate-500 font-medium">Loading rows...</span>
+      </div>
+    )
   }
 
   return (

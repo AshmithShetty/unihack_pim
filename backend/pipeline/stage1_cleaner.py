@@ -3,7 +3,7 @@ import os
 import json
 import pandas as pd
 from typing import Dict, Tuple, List, Optional
-from groq import Groq
+from groq import AsyncGroq
 from backend.schemas import GOLDEN_RECORD_COLUMNS
 
 def clean_value(val: any) -> Optional[str]:
@@ -21,7 +21,7 @@ def clean_value(val: any) -> Optional[str]:
         
     return val_str
 
-def resolve_manufacturer(part_manuf: str, part_desc: str, manufacturer_df: Optional[pd.DataFrame]) -> dict:
+async def resolve_manufacturer(part_manuf: str, part_desc: str, manufacturer_df: Optional[pd.DataFrame]) -> dict:
     resolved = {
         "MANUFACTURER_NAME": None,
         "BRAND_NAME": None,
@@ -33,7 +33,7 @@ def resolve_manufacturer(part_manuf: str, part_desc: str, manufacturer_df: Optio
         return resolved
         
     try:
-        client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+        client = AsyncGroq(api_key=os.getenv("GROQ_API_KEY"))
         prompt = (
             "Extract the Canonical Manufacturer Name and Brand Name from the following product information. "
             "Return ONLY a valid JSON object with keys 'MANUFACTURER_NAME' and 'BRAND_NAME'. "
@@ -41,7 +41,7 @@ def resolve_manufacturer(part_manuf: str, part_desc: str, manufacturer_df: Optio
             f"{combined_info}"
         )
         
-        response = client.chat.completions.create(
+        response = await client.chat.completions.create(
             model=os.getenv("GROQ_MODEL"),
             messages=[{"role": "user", "content": prompt}],
             response_format={"type": "json_object"},
@@ -58,7 +58,7 @@ def resolve_manufacturer(part_manuf: str, part_desc: str, manufacturer_df: Optio
 
     return resolved
 
-def clean_and_resolve(row: dict, confirmed_mapping: dict, manufacturer_df: Optional[pd.DataFrame] = None) -> Tuple[Dict, List[str]]:
+async def clean_and_resolve(row: dict, confirmed_mapping: dict, manufacturer_df: Optional[pd.DataFrame] = None) -> Tuple[Dict, List[str]]:
     """
     Cleans raw row data, applies mapping, resolves manufacturer,
     and returns (filled_row_dict, gap_list).
@@ -85,7 +85,7 @@ def clean_and_resolve(row: dict, confirmed_mapping: dict, manufacturer_df: Optio
     part_manuf = filled_row.get("Part_Manuf") or ""
     part_desc = filled_row.get("Part_Desc") or ""
     
-    resolved = resolve_manufacturer(part_manuf, part_desc, manufacturer_df)
+    resolved = await resolve_manufacturer(part_manuf, part_desc, manufacturer_df)
     
     if resolved["MANUFACTURER_NAME"]:
         filled_row["MANUFACTURER_NAME"] = resolved["MANUFACTURER_NAME"]

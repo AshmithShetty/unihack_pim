@@ -1,5 +1,5 @@
 import os
-from groq import Groq
+from groq import AsyncGroq
 from pydantic import ValidationError
 import time
 from ..schemas import EnrichedProduct
@@ -9,9 +9,9 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
 
 # Setup Groq native client
-client = Groq(api_key=GROQ_API_KEY)
+client = AsyncGroq(api_key=GROQ_API_KEY)
 
-def run_stage3_enricher(row_data: Dict[str, Any], scraper_data: Dict[str, Any], prompt_template: str, mapping: Dict[str, str]) -> EnrichedProduct:
+async def run_stage3_enricher(row_data: Dict[str, Any], scraper_data: Dict[str, Any], prompt_template: str, mapping: Dict[str, str]) -> EnrichedProduct:
     # Build user prompt
     page_text = scraper_data.get("page_text", "")
     if page_text:
@@ -44,7 +44,7 @@ def run_stage3_enricher(row_data: Dict[str, Any], scraper_data: Dict[str, Any], 
     
     for attempt in range(max_retries):
         try:
-            response = client.chat.completions.create(
+            response = await client.chat.completions.create(
                 model=GROQ_MODEL,
                 messages=[
                     {"role": "system", "content": prompt_template},
@@ -73,7 +73,8 @@ def run_stage3_enricher(row_data: Dict[str, Any], scraper_data: Dict[str, Any], 
         except Exception as e:
             if attempt == max_retries - 1:
                 raise e
-            time.sleep(2)
+            import asyncio
+            await asyncio.sleep(2)
     
     # Merge back the URLs found by scraper
     product.mfr_url = scraper_data.get("mfr_url")

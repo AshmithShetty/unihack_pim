@@ -43,7 +43,7 @@ async def fetch_ddg_links(crawler: AsyncWebCrawler, search_query: str, brand_nam
     encoded_query = urllib.parse.quote_plus(search_query)
     search_url = f"https://html.duckduckgo.com/html/?q={encoded_query}"
     
-    result = await crawler.arun(url=search_url)
+    result = await crawler.arun(url=search_url, timeout=60000)
     
     links = []
     
@@ -99,7 +99,7 @@ async def run_stage2_scraper(filled_row: dict, row_data: dict) -> Dict[str, Any]
                 print(f"[AI Search Engine] Official Product Page Found: {mfr_url}")
                 await asyncio.sleep(1) # Rate limit
                 
-                prod_result = await crawler.arun(url=mfr_url)
+                prod_result = await crawler.arun(url=mfr_url, timeout=60000)
                 page_text = prod_result.markdown
                 
                 # Extract PDFs from main page

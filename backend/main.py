@@ -176,13 +176,13 @@ async def enrich_single_row(row_id: int, project_id: int, row_data: dict, mappin
         update_row_status(row_id, "running")
         try:
             # Stage 1: Cleaner
-            filled_row, gap_list = clean_and_resolve(row_data, mapping, reference_data["manufacturer_df"])
+            filled_row, gap_list = await clean_and_resolve(row_data, mapping, reference_data["manufacturer_df"])
             
             # Stage 2: Scraper
             scraper_data = await run_stage2_scraper(filled_row, row_data)
             
             # Stage 3: Enricher
-            product = run_stage3_enricher(row_data, scraper_data, SYSTEM_PROMPT, mapping)
+            product = await run_stage3_enricher(row_data, scraper_data, SYSTEM_PROMPT, mapping)
             
             # Stage 4: Validator
             has_web_data = bool(scraper_data.get("page_text"))
