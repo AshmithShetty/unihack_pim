@@ -6,7 +6,6 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).parent.parent
 DB_PATH = BASE_DIR / "enrichment.db"
-CSV_PATH = BASE_DIR / "docs" / "Unihack_ Expected Output - Delivery Format.csv"
 DDL_PATH = BASE_DIR / "config" / "enriched_rows_ddl.sql"
 
 def get_db():
@@ -15,10 +14,8 @@ def get_db():
     return conn
 
 def init_db():
-    # 1. Read headers
-    with open(CSV_PATH, 'r', encoding='utf-8') as f:
-        reader = csv.reader(f)
-        headers = next(reader)
+    from backend.schemas import GOLDEN_RECORD_COLUMNS
+    headers = GOLDEN_RECORD_COLUMNS
 
     # 2. Generate DDL
     ddl_lines = [
